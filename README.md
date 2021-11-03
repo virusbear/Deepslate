@@ -10,3 +10,5 @@ Deepslate if WIP and currently not available for installation
 - Accuracy with respect to Mojang implementation
 - High performance low footprint
 - Load balancing capability with Database based chunkstorage implementation
+- Native mod support using Go Plugins
+- Builtin Prometheus metrics endpoint as well as Logging provider for Grafana Loki 
