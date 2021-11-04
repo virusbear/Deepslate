@@ -1,6 +1,9 @@
 package nbt
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 type Tag interface{}
 
@@ -53,7 +56,8 @@ type CompoundType int8
 type IntArrayType int8
 type LongArrayType int8
 
-type EndTag struct{}
+type EndTag struct {
+}
 type ByteTag struct {
 	value int8
 }
@@ -73,7 +77,7 @@ type DoubleTag struct {
 	value float64
 }
 type ByteArrayTag struct {
-	value []byte
+	value []int8
 }
 type StringTag struct {
 	value string
@@ -155,6 +159,172 @@ func (_ ShortType) Write(writer Writer, tag Tag) error {
 	return writer.WriteInt16(data.value)
 }
 
+func (_ IntType) Read(reader Reader) (Tag, error) {
+	data, err := reader.ReadInt32()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return IntTag{
+		value: data,
+	}, nil
+}
+
+func (_ IntType) Write(writer Writer, tag Tag) error {
+	data, ok := tag.(IntTag)
+
+	if !ok {
+		return errors.New("incompatible tag. Expected INT")
+	}
+
+	return writer.WriteInt32(data.value)
+}
+
+func (_ LongType) Read(reader Reader) (Tag, error) {
+	data, err := reader.ReadInt64()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return LongTag{
+		value: data,
+	}, nil
+}
+
+func (_ LongType) Write(writer Writer, tag Tag) error {
+	data, ok := tag.(LongTag)
+
+	if !ok {
+		return errors.New("incompatible tag. Expected LONG")
+	}
+
+	return writer.WriteInt64(data.value)
+}
+
+func (_ FloatType) Read(reader Reader) (Tag, error) {
+	data, err := reader.ReadFloat32()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return FloatTag{
+		value: data,
+	}, nil
+}
+
+func (_ FloatType) Write(writer Writer, tag Tag) error {
+	data, ok := tag.(FloatTag)
+
+	if !ok {
+		return errors.New("incompatible tag. Expected FLOAT")
+	}
+
+	return writer.WriteFloat32(data.value)
+}
+
+func (_ DoubleType) Read(reader Reader) (Tag, error) {
+	data, err := reader.ReadFloat64()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return DoubleTag{
+		value: data,
+	}, nil
+}
+
+func (_ DoubleType) Write(writer Writer, tag Tag) error {
+	data, ok := tag.(DoubleTag)
+
+	if !ok {
+		return errors.New("incompatible tag. Expected DOUBLE")
+	}
+
+	return writer.WriteFloat64(data.value)
+}
+
+func (_ ByteArrayType) Read(reader Reader) (Tag, error) {
+	data, err := reader.ReadByteArray()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ByteArrayTag{
+		value: data,
+	}, nil
+}
+
+func (_ ByteArrayType) Write(writer Writer, tag Tag) error {
+	data, ok := tag.(ByteArrayTag)
+
+	if !ok {
+		return errors.New("incompatible tag. Expected BYTE_ARRAY")
+	}
+
+	return writer.WriteByteArray(data.value)
+}
+
+func (_ StringType) Read(reader Reader) (Tag, error) {
+	data, err := reader.ReadString()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return StringTag{
+		value: data,
+	}, nil
+}
+
+func (_ StringType) Write(writer Writer, tag Tag) error {
+	data, ok := tag.(StringTag)
+
+	if !ok {
+		return errors.New("incompatible tag. Expected STRING")
+	}
+
+	return writer.WriteString(data.value)
+}
+
+func (_ ListType) Read(reader Reader) (Tag, error) {
+	dtype, err := reader.ReadInt8()
+
+	if err != nil {
+		return nil, err
+	}
+
+	dataType, err := getDataType(dtype)
+
+	if err != nil {
+		return nil, err
+	}
+
+	length, err := reader.ReadInt32()
+
+	if err != nil {
+		return nil, err
+	}
+
+	list := make([]Tag, length)
+
+	for i, _ := range list {
+		data, err := dataType.Read(reader)
+
+		if err != nil {
+			return nil, fmt.Errorf("unable to read list at index %d. Reason: %w", i, err)
+		}
+
+		list[i] = data
+	}
+
+	return list, nil
+}
+
 const (
 	EndTypeId       EndType       = 0
 	ByteTypeId      ByteType      = 1
@@ -171,15 +341,35 @@ const (
 	LongArrayTypeId LongArrayType = 12
 )
 
-func getDataType(dtype int8) DataType {
+func getDataType(dtype int8) (DataType, error) {
 	switch dtype {
 	case int8(EndTypeId):
-		return EndTypeId
+		return EndTypeId, nil
 	case int8(ByteTypeId):
-		return ByteTypeId
+		return ByteTypeId, nil
 	case int8(ShortTypeId):
-		return ShortTypeId
+		return ShortTypeId, nil
+	case int8(IntTypeId):
+		return IntTypeId, nil
+	case int8(LongTypeId):
+		return LongTypeId, nil
+	case int8(FloatTypeId):
+		return FloatTypeId, nil
+	case int8(DoubleTypeId):
+		return DoubleTypeId, nil
+	case int8(ByteArrayTypeId):
+		return ByteArrayTypeId, nil
+	case int8(StringTypeId):
+		return StringTypeId, nil
+	case int8(ListTypeId):
+		return ListTypeId, nil
+	case int8(CompoundTypeId):
+		return CompoundTypeId, nil
+	case int8(IntArrayTypeId):
+		return IntArrayTypeId, nil
+	case int8(LongArrayTypeId):
+		return LongArrayTypeId, nil
 	default:
-		return nil
+		return nil, fmt.Errorf("unknown NBT datatype %d", dtype)
 	}
 }
