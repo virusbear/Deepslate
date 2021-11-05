@@ -1,37 +1,30 @@
 package nbt
 
 import (
-	"compress/gzip"
-	"errors"
-	"fmt"
 	"io"
-	"os"
-	"reflect"
 )
 
-func Read(reader io.Reader, compressed bool) (Tag, error) {
-	if compressed {
-		r, err := gzip.NewReader(reader)
-		if err != nil {
-			return nil, err
-		}
 
-		return Read(r, false)
-	} else {
-		return NewReader(reader).ReadTag()
+func Read(reader io.Reader) (Tag, error) {
+	return NewReader(reader).Read()
+}
+
+func Write(writer io.Writer, tag Tag) error {
+	return NewWriter(writer).Write(tag)
+}
+
+func NewByteTag(name string, value int8) Tag {
+	return BaseTag{
+		name: name,
+		dataType: byteTypeId,
+		tag: ByteTag{
+			value: value,
+		},
 	}
 }
 
-func Write(writer io.Writer, tag Tag, compressed bool) error {
-	if compressed {
-		w := gzip.NewWriter(writer)
-
-		return Write(w, tag, false)
-	} else {
-		return NewWriter(writer).WriteTag(tag)
-	}
-}
-
+//TODO: Unmarshal and Marshal using Reflection
+/*
 func Unmarshal(reader io.Reader, v interface{}) error {
 	for {
 		dataType, err := readByte(reader)
@@ -39,7 +32,7 @@ func Unmarshal(reader io.Reader, v interface{}) error {
 			return err
 		}
 
-		if DataType(dataType) == End {
+		if dataType(dataType) == End {
 			return nil
 		}
 
@@ -55,7 +48,7 @@ func Unmarshal(reader io.Reader, v interface{}) error {
 
 		field.Tag.Get("nbt")
 
-		switch DataType(dataType) {
+		switch dataType(dataType) {
 			case End: return nil
 			case Byte: {
 				readByte(reader)
@@ -67,4 +60,4 @@ func Unmarshal(reader io.Reader, v interface{}) error {
 
 func Marshal(v interface{}) ([]byte, error) {
 	return nil, nil
-}
+}*/

@@ -5,17 +5,17 @@ import (
 	"fmt"
 )
 
-const ListTypeId ListType = 9
+const listTypeId listType = 9
 
-type ListType int8
+type listType int8
 
 type ListTag struct {
-	dataType DataType
+	dataType dataType
 	value    []Tag
 }
 
-func (_ ListType) Read(reader Reader) (Tag, error) {
-	dtype, err := reader.ReadInt8()
+func (_ listType) Read(reader Reader) (Tag, error) {
+	dtype, err := reader.readInt8()
 
 	if err != nil {
 		return nil, err
@@ -27,7 +27,7 @@ func (_ ListType) Read(reader Reader) (Tag, error) {
 		return nil, err
 	}
 
-	length, err := reader.ReadInt32()
+	length, err := reader.readInt32()
 
 	if err != nil {
 		return nil, err
@@ -48,14 +48,14 @@ func (_ ListType) Read(reader Reader) (Tag, error) {
 	return list, nil
 }
 
-func (_ ListType) Write(writer Writer, tag Tag) error {
+func (_ listType) Write(writer Writer, tag Tag) error {
 	data, ok := tag.(ListTag)
 
 	if !ok {
 		return errors.New("incompatible tag. Expected LIST")
 	}
 
-	if err := writer.WriteInt8(data.dataType.GetId()); err != nil {
+	if err := writer.writeInt8(data.dataType.GetId()); err != nil {
 		return fmt.Errorf("unable to write list datatype. Reason: %w", err)
 	}
 
@@ -68,6 +68,6 @@ func (_ ListType) Write(writer Writer, tag Tag) error {
 	return nil
 }
 
-func (_ ListType) GetId() int8 {
-	return int8(ListTypeId)
+func (_ listType) GetId() int8 {
+	return int8(listTypeId)
 }

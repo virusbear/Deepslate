@@ -2,6 +2,7 @@ package nbt
 
 import (
 	"encoding/binary"
+	"errors"
 	"io"
 )
 
@@ -15,64 +16,84 @@ func NewWriter(writer io.Writer) Writer {
 	}
 }
 
+func (nbt Writer) Write(tag Tag) error {
+	baseTag, ok := tag.(BaseTag)
+
+	if !ok {
+		return errors.New("unable to write nbt tag. Expected BASE_TAG")
+	}
+
+	err := nbt.writeInt8(baseTag.dataType.GetId())
+	if err != nil {
+		return err
+	}
+
+	err = nbt.writeString(baseTag.name)
+	if err != nil {
+		return err
+	}
+
+	return baseTag.dataType.Write(nbt, baseTag.tag)
+}
+
 func (nbt Writer) write(data interface{}) error {
-	return binary.Write(nbt.writer, binary.LittleEndian, data)
+	return binary.Write(nbt.writer, binary.BigEndian, data)
 }
 
-func (nbt Writer) WriteInt8(data int8) error {
+func (nbt Writer) writeInt8(data int8) error {
 	return nbt.write(data)
 }
 
-func (nbt Writer) WriteInt16(data int16) error {
+func (nbt Writer) writeInt16(data int16) error {
 	return nbt.write(data)
 }
 
-func (nbt Writer) WriteInt32(data int32) error {
+func (nbt Writer) writeInt32(data int32) error {
 	return nbt.write(data)
 }
 
-func (nbt Writer) WriteInt64(data int64) error {
+func (nbt Writer) writeInt64(data int64) error {
 	return nbt.write(data)
 }
 
-func (nbt Writer) WriteString(data string) error {
+func (nbt Writer) writeString(data string) error {
 	buf := []byte(data)
 
-	if err := nbt.WriteInt32(int32(len(buf))); err != nil {
+	if err := nbt.writeInt32(int32(len(buf))); err != nil {
 		return err
 	}
 
 	return nbt.write(buf)
 }
 
-func (nbt Writer) WriteFloat32(data float32) error {
+func (nbt Writer) writeFloat32(data float32) error {
 	return nbt.write(data)
 }
 
-func (nbt Writer) WriteFloat64(data float64) error {
+func (nbt Writer) writeFloat64(data float64) error {
 	return nbt.write(data)
 }
 
-func (nbt Writer) WriteByteArray(data []int8) error {
-	if err := nbt.WriteInt32(int32(len(data))); err != nil {
+func (nbt Writer) writeByteArray(data []int8) error {
+	if err := nbt.writeInt32(int32(len(data))); err != nil {
 		return err
 	}
 
-	return binary.Write(nbt.writer, binary.LittleEndian, data)
+	return binary.Write(nbt.writer, binary.BigEndian, data)
 }
 
-func (nbt Writer) WriteInt32Array(data []int32) error {
-	if err := nbt.WriteInt32(int32(len(data))); err != nil {
+func (nbt Writer) writeInt32Array(data []int32) error {
+	if err := nbt.writeInt32(int32(len(data))); err != nil {
 		return err
 	}
 
-	return binary.Write(nbt.writer, binary.LittleEndian, data)
+	return binary.Write(nbt.writer, binary.BigEndian, data)
 }
 
-func (nbt Writer) WriteInt64Array(data []int64) error {
-	if err := nbt.WriteInt32(int32(len(data))); err != nil {
+func (nbt Writer) writeInt64Array(data []int64) error {
+	if err := nbt.writeInt32(int32(len(data))); err != nil {
 		return err
 	}
 
-	return binary.Write(nbt.writer, binary.LittleEndian, data)
+	return binary.Write(nbt.writer, binary.BigEndian, data)
 }

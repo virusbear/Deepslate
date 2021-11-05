@@ -2,16 +2,16 @@ package nbt
 
 import "errors"
 
-const LongTypeId LongType = 4
+const longTypeId longType = 4
 
-type LongType int8
+type longType int8
 
 type LongTag struct {
 	value int64
 }
 
-func (_ LongType) Read(reader Reader) (Tag, error) {
-	data, err := reader.ReadInt64()
+func (_ longType) Read(reader Reader) (Tag, error) {
+	data, err := reader.readInt64()
 
 	if err != nil {
 		return nil, err
@@ -22,16 +22,16 @@ func (_ LongType) Read(reader Reader) (Tag, error) {
 	}, nil
 }
 
-func (_ LongType) Write(writer Writer, tag Tag) error {
+func (_ longType) Write(writer Writer, tag Tag) error {
 	data, ok := tag.(LongTag)
 
 	if !ok {
 		return errors.New("incompatible tag. Expected LONG")
 	}
 
-	return writer.WriteInt64(data.value)
+	return writer.writeInt64(data.value)
 }
 
-func (_ LongType) GetId() int8 {
-	return int8(LongTypeId)
+func (_ longType) GetId() int8 {
+	return int8(longTypeId)
 }

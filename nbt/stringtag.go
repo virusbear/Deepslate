@@ -2,16 +2,16 @@ package nbt
 
 import "errors"
 
-const StringTypeId StringType = 8
+const stringTypeId stringType = 8
 
-type StringType int8
+type stringType int8
 
 type StringTag struct {
 	value string
 }
 
-func (_ StringType) Read(reader Reader) (Tag, error) {
-	data, err := reader.ReadString()
+func (_ stringType) Read(reader Reader) (Tag, error) {
+	data, err := reader.readString()
 
 	if err != nil {
 		return nil, err
@@ -22,16 +22,16 @@ func (_ StringType) Read(reader Reader) (Tag, error) {
 	}, nil
 }
 
-func (_ StringType) Write(writer Writer, tag Tag) error {
+func (_ stringType) Write(writer Writer, tag Tag) error {
 	data, ok := tag.(StringTag)
 
 	if !ok {
 		return errors.New("incompatible tag. Expected STRING")
 	}
 
-	return writer.WriteString(data.value)
+	return writer.writeString(data.value)
 }
 
-func (_ StringType) GetId() int8 {
-	return int8(StringTypeId)
+func (_ stringType) GetId() int8 {
+	return int8(stringTypeId)
 }

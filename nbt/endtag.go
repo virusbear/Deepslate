@@ -2,14 +2,14 @@ package nbt
 
 import "errors"
 
-const EndTypeId EndType = 0
+const endTypeId endType = 0
 
-type EndType int8
+type endType int8
 
 type EndTag struct{}
 
-func (end EndType) Read(reader Reader) (Tag, error) {
-	data, err := reader.ReadInt8()
+func (end endType) Read(reader Reader) (Tag, error) {
+	data, err := reader.readInt8()
 
 	if err != nil {
 		return nil, err
@@ -22,14 +22,14 @@ func (end EndType) Read(reader Reader) (Tag, error) {
 	return EndTag{}, nil
 }
 
-func (_ EndType) Write(writer Writer, tag Tag) error {
+func (_ endType) Write(writer Writer, tag Tag) error {
 	if _, ok := tag.(EndTag); !ok {
 		return errors.New("incompatible tag. Expected END")
 	}
 
-	return writer.WriteInt8(0)
+	return writer.writeInt8(0)
 }
 
-func (_ EndType) GetId() int8 {
-	return int8(EndTypeId)
+func (_ endType) GetId() int8 {
+	return int8(endTypeId)
 }

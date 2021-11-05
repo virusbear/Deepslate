@@ -2,16 +2,16 @@ package nbt
 
 import "errors"
 
-const FloatTypeId FloatType = 5
+const floatTypeId floatType = 5
 
-type FloatType int8
+type floatType int8
 
 type FloatTag struct {
 	value float32
 }
 
-func (_ FloatType) Read(reader Reader) (Tag, error) {
-	data, err := reader.ReadFloat32()
+func (_ floatType) Read(reader Reader) (Tag, error) {
+	data, err := reader.readFloat32()
 
 	if err != nil {
 		return nil, err
@@ -22,16 +22,16 @@ func (_ FloatType) Read(reader Reader) (Tag, error) {
 	}, nil
 }
 
-func (_ FloatType) Write(writer Writer, tag Tag) error {
+func (_ floatType) Write(writer Writer, tag Tag) error {
 	data, ok := tag.(FloatTag)
 
 	if !ok {
 		return errors.New("incompatible tag. Expected FLOAT")
 	}
 
-	return writer.WriteFloat32(data.value)
+	return writer.writeFloat32(data.value)
 }
 
-func (_ FloatType) GetId() int8 {
-	return int8(FloatTypeId)
+func (_ floatType) GetId() int8 {
+	return int8(floatTypeId)
 }
