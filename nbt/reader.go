@@ -25,6 +25,14 @@ func (nbt Reader) Read() (Tag, error) {
 
 	dataType, err := getDataType(dtype)
 
+	if dataType == endTypeId {
+		return BaseTag{
+			dataType: dataType,
+			name: "",
+			tag: EndTag{},
+		}, nil
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -50,28 +58,28 @@ func (nbt Reader) Read() (Tag, error) {
 
 func (nbt Reader) readInt8() (int8, error) {
 	var data int8
-	err := binary.Read(nbt.reader, binary.BigEndian, data)
+	err := binary.Read(nbt.reader, binary.BigEndian, &data)
 
 	return data, err
 }
 
 func (nbt Reader) readInt16() (int16, error) {
 	var data int16
-	err := binary.Read(nbt.reader, binary.BigEndian, data)
+	err := binary.Read(nbt.reader, binary.BigEndian, &data)
 
 	return data, err
 }
 
 func (nbt Reader) readInt32() (int32, error) {
 	var data int32
-	err := binary.Read(nbt.reader, binary.BigEndian, data)
+	err := binary.Read(nbt.reader, binary.BigEndian, &data)
 
 	return data, err
 }
 
 func (nbt Reader) readInt64() (int64, error) {
 	var data int64
-	err := binary.Read(nbt.reader, binary.BigEndian, data)
+	err := binary.Read(nbt.reader, binary.BigEndian, &data)
 
 	return data, err
 }
@@ -94,14 +102,14 @@ func (nbt Reader) readString() (string, error) {
 
 func (nbt Reader) readFloat32() (float32, error) {
 	var data float32
-	err := binary.Read(nbt.reader, binary.BigEndian, data)
+	err := binary.Read(nbt.reader, binary.BigEndian, &data)
 
 	return data, err
 }
 
 func (nbt Reader) readFloat64() (float64, error) {
 	var data float64
-	err := binary.Read(nbt.reader, binary.BigEndian, data)
+	err := binary.Read(nbt.reader, binary.BigEndian, &data)
 
 	return data, err
 }

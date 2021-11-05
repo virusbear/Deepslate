@@ -27,7 +27,7 @@ func (_ compoundType) Read(reader Reader) (Tag, error) {
 			return nil, errors.New("unable to read CompoundTag. Expected reader.Read() to return BASE_TAG")
 		}
 
-		if baseTag.dataType.GetId() == endTypeId.GetId() {
+		if baseTag.dataType == endTypeId {
 			break
 		}
 
@@ -38,7 +38,27 @@ func (_ compoundType) Read(reader Reader) (Tag, error) {
 }
 
 func (_ compoundType) Write(writer Writer, tag Tag) error {
-	return errors.New("Not Implemented")
+	data, ok := tag.(CompoundTag)
+
+	if !ok {
+		return errors.New("incompatible tag. Expected COMPOUND")
+	}
+
+	for _, value := range data.value {
+		err := writer.Write(value)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return writer.Write(
+		BaseTag{
+			name: "",
+			dataType: endTypeId,
+			tag: EndTag{},
+		},
+	)
 }
 
 func (_ compoundType) GetId() int8 {

@@ -13,6 +13,7 @@ func Write(writer io.Writer, tag Tag) error {
 	return NewWriter(writer).Write(tag)
 }
 
+// NewByteTag TODO: Add Tag "Constructors"
 func NewByteTag(name string, value int8) Tag {
 	return BaseTag{
 		name: name,

@@ -2,20 +2,28 @@ package main
 
 import (
 	"Deepslate/nbt"
+	"compress/gzip"
+	"fmt"
 	"log"
 	"os"
 )
 
-type test struct {
-	Name string `nbt:"name"`
-}
-
 func main() {
-	f, err := os.Open("H:\\minecraft\\1.17.1\\world\\region\\r.0.0.mca")
+	f, err := os.Open("H:\\minecraft\\1.17.1\\world\\level.dat")
 
 	if err != nil {
 		log.Panic(err)
 	}
 
-	nbt.Unmarshal(f)
+	reader, err := gzip.NewReader(f)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	tag, err := nbt.Read(reader)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	fmt.Println(tag)
 }

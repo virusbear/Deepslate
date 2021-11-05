@@ -17,6 +17,10 @@ func NewWriter(writer io.Writer) Writer {
 }
 
 func (nbt Writer) Write(tag Tag) error {
+	if _, ok := tag.(EndTag); ok {
+		return endTypeId.Write(nbt, tag)
+	}
+
 	baseTag, ok := tag.(BaseTag)
 
 	if !ok {
