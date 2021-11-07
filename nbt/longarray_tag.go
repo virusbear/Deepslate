@@ -32,7 +32,9 @@ func (_ longArrayType) Read(reader Reader) (Tag, error) {
 		data[i] = value
 	}
 
-	return data, nil
+	return LongArrayTag{
+		value: data,
+	}, nil
 }
 
 func (_ longArrayType) Write(writer Writer, tag Tag) error {

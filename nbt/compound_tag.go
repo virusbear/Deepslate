@@ -54,9 +54,9 @@ func (_ compoundType) Write(writer Writer, tag Tag) error {
 
 	return writer.Write(
 		BaseTag{
-			name: "",
+			name:     "",
 			dataType: endTypeId,
-			tag: EndTag{},
+			tag:      endTag{},
 		},
 	)
 }

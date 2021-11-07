@@ -6,7 +6,7 @@ const endTypeId endType = 0
 
 type endType int8
 
-type EndTag struct{}
+type endTag struct{}
 
 func (end endType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt8()
@@ -19,11 +19,11 @@ func (end endType) Read(reader Reader) (Tag, error) {
 		return nil, errors.New("invalid end tag")
 	}
 
-	return EndTag{}, nil
+	return endTag{}, nil
 }
 
 func (_ endType) Write(writer Writer, tag Tag) error {
-	if _, ok := tag.(EndTag); !ok {
+	if _, ok := tag.(endTag); !ok {
 		return errors.New("incompatible tag. Expected END")
 	}
 

@@ -28,8 +28,8 @@ func (nbt Reader) Read() (Tag, error) {
 	if dataType == endTypeId {
 		return BaseTag{
 			dataType: dataType,
-			name: "",
-			tag: EndTag{},
+			name:     "",
+			tag:      endTag{},
 		}, nil
 	}
 

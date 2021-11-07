@@ -32,7 +32,9 @@ func (_ intArrayType) Read(reader Reader) (Tag, error) {
 		data[i] = value
 	}
 
-	return data, nil
+	return IntArrayTag{
+		value: data,
+	}, nil
 }
 
 func (_ intArrayType) Write(writer Writer, tag Tag) error {

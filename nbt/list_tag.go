@@ -45,7 +45,10 @@ func (_ listType) Read(reader Reader) (Tag, error) {
 		list[i] = data
 	}
 
-	return list, nil
+	return ListTag{
+		dataType: dataType,
+		value: list,
+	}, nil
 }
 
 func (_ listType) Write(writer Writer, tag Tag) error {

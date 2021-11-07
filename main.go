@@ -1,29 +1,25 @@
 package main
 
 import (
-	"Deepslate/nbt"
-	"compress/gzip"
-	"fmt"
-	"log"
+	"Deepslate/anvil"
 	"os"
 )
 
 func main() {
-	f, err := os.Open("H:\\minecraft\\1.17.1\\world\\level.dat")
-
+	f, err := os.Open("H:\\Test\\world\\region\\r.0.0.mca")
 	if err != nil {
-		log.Panic(err)
+		panic(err)
+	}
+	storage, err := anvil.NewStorage(f)
+	if err != nil {
+		panic(err)
 	}
 
-	reader, err := gzip.NewReader(f)
-	if err != nil {
-		log.Panic(err)
-	}
+	println(storage)
 
-	tag, err := nbt.Read(reader)
+	chunk, err := storage.GetChunk(0, 0)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
-
-	fmt.Println(tag)
+	println(chunk)
 }
