@@ -6,10 +6,6 @@ const doubleTypeId doubleType = 6
 
 type doubleType int8
 
-type DoubleTag struct {
-	value float64
-}
-
 func (_ doubleType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readFloat64()
 
@@ -34,4 +30,12 @@ func (_ doubleType) Write(writer Writer, tag Tag) error {
 
 func (_ doubleType) GetId() int8 {
 	return int8(doubleTypeId)
+}
+
+type DoubleTag struct {
+	value float64
+}
+
+func (_ DoubleTag) dataType() dataType {
+	return doubleTypeId
 }

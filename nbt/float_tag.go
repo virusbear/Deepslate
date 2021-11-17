@@ -6,10 +6,6 @@ const floatTypeId floatType = 5
 
 type floatType int8
 
-type FloatTag struct {
-	value float32
-}
-
 func (_ floatType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readFloat32()
 
@@ -34,4 +30,12 @@ func (_ floatType) Write(writer Writer, tag Tag) error {
 
 func (_ floatType) GetId() int8 {
 	return int8(floatTypeId)
+}
+
+type FloatTag struct {
+	value float32
+}
+
+func (_ FloatTag) dataType() dataType {
+	return floatTypeId
 }

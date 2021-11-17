@@ -4,36 +4,8 @@ import (
 	"fmt"
 )
 
-type Tag interface{}
-
-type Wrapper interface {
-	GetTag() Tag
-}
-
-type Named interface {
-	GetName() string
-}
-
-type Typed interface {
-	getDataType() dataType
-}
-
-type BaseTag struct {
-	name     string
-	dataType dataType
-	tag      Tag
-}
-
-func (tag BaseTag) GetName() string {
-	return tag.name
-}
-
-func (tag BaseTag) getDataType() dataType {
-	return tag.dataType
-}
-
-func (tag BaseTag) GetTag() Tag {
-	return tag.tag
+type Tag interface{
+	dataType() dataType
 }
 
 type dataType interface {

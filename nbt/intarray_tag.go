@@ -9,10 +9,6 @@ const intArrayTypeId intArrayType = 11
 
 type intArrayType int8
 
-type IntArrayTag struct {
-	value []int32
-}
-
 func (_ intArrayType) Read(reader Reader) (Tag, error) {
 	length, err := reader.readInt32()
 
@@ -59,4 +55,12 @@ func (_ intArrayType) Write(writer Writer, tag Tag) error {
 
 func (_ intArrayType) GetId() int8 {
 	return int8(intArrayTypeId)
+}
+
+type IntArrayTag struct {
+	value []int32
+}
+
+func (_ IntArrayTag) dataType() dataType {
+	return intArrayTypeId
 }

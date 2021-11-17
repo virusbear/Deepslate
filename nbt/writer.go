@@ -2,7 +2,6 @@ package nbt
 
 import (
 	"encoding/binary"
-	"errors"
 	"io"
 )
 
@@ -11,33 +10,23 @@ type Writer struct {
 }
 
 func NewWriter(writer io.Writer) Writer {
-	return Writer {
+	return Writer{
 		writer: writer,
 	}
 }
 
-func (nbt Writer) Write(tag Tag) error {
-	if _, ok := tag.(endTag); ok {
-		return endTypeId.Write(nbt, tag)
-	}
-
-	baseTag, ok := tag.(BaseTag)
-
-	if !ok {
-		return errors.New("unable to write nbt tag. Expected BASE_TAG")
-	}
-
-	err := nbt.writeInt8(baseTag.dataType.GetId())
+func (nbt Writer) Write(name string, tag Tag) error {
+	err := nbt.writeInt8(tag.dataType().GetId())
 	if err != nil {
 		return err
 	}
 
-	err = nbt.writeString(baseTag.name)
+	err = nbt.writeString(name)
 	if err != nil {
 		return err
 	}
 
-	return baseTag.dataType.Write(nbt, baseTag.tag)
+	return tag.dataType().Write(nbt, tag)
 }
 
 func (nbt Writer) write(data interface{}) error {

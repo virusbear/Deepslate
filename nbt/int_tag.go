@@ -8,10 +8,6 @@ const intTypeId intType = 3
 
 type intType int8
 
-type IntTag struct {
-	value int32
-}
-
 func (_ intType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt32()
 
@@ -36,4 +32,12 @@ func (_ intType) Write(writer Writer, tag Tag) error {
 
 func (_ intType) GetId() int8 {
 	return int8(intTypeId)
+}
+
+type IntTag struct {
+	value int32
+}
+
+func (_ IntTag) dataType() dataType {
+	return intTypeId
 }

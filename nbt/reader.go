@@ -16,44 +16,29 @@ func NewReader(reader io.Reader) Reader {
 	}
 }
 
-func (nbt Reader) Read() (Tag, error) {
+func (nbt Reader) Read() (string, Tag, error) {
 	dtype, err := nbt.readInt8()
-
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
 
 	dataType, err := getDataType(dtype)
-
-	if dataType == endTypeId {
-		return BaseTag{
-			dataType: dataType,
-			name:     "",
-			tag:      endTag{},
-		}, nil
+	if err != nil {
+		return "", nil, err
 	}
 
-	if err != nil {
-		return nil, err
+	if dataType == endTypeId {
+		tag, err := endTypeId.Read(nbt)
+		return "", tag, err
 	}
 
 	name, err := nbt.readString()
-
 	if err != nil {
-		return nil, err
+		return "", nil, err
 	}
 
 	tag, err := dataType.Read(nbt)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return BaseTag{
-		dataType: dataType,
-		name:     name,
-		tag:      tag,
-	}, nil
+	return name, tag, err
 }
 
 func (nbt Reader) readInt8() (int8, error) {

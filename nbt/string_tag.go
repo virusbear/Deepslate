@@ -6,10 +6,6 @@ const stringTypeId stringType = 8
 
 type stringType int8
 
-type StringTag struct {
-	value string
-}
-
 func (_ stringType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readString()
 
@@ -34,4 +30,12 @@ func (_ stringType) Write(writer Writer, tag Tag) error {
 
 func (_ stringType) GetId() int8 {
 	return int8(stringTypeId)
+}
+
+type StringTag struct {
+	value string
+}
+
+func (_ StringTag) dataType() dataType {
+	return stringTypeId
 }

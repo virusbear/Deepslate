@@ -6,8 +6,6 @@ const endTypeId endType = 0
 
 type endType int8
 
-type endTag struct{}
-
 func (end endType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt8()
 
@@ -32,4 +30,10 @@ func (_ endType) Write(writer Writer, tag Tag) error {
 
 func (_ endType) GetId() int8 {
 	return int8(endTypeId)
+}
+
+type endTag struct{}
+
+func (_ endTag) dataType() dataType {
+	return endTypeId
 }

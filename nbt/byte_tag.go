@@ -6,10 +6,6 @@ const byteTypeId byteType = 1
 
 type byteType int8
 
-type ByteTag struct {
-	value int8
-}
-
 func (_ byteType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt8()
 
@@ -31,4 +27,26 @@ func (_ byteType) Write(writer Writer, tag Tag) error {
 
 func (_ byteType) GetId() int8 {
 	return int8(byteTypeId)
+}
+
+func (tag ByteTag) Get() int8 {
+	return tag.value
+}
+
+type ByteTag struct {
+	value int8
+}
+
+func (_ ByteTag) dataType() dataType {
+	return byteTypeId
+}
+
+func (tag ByteTag) Set(value int8) {
+	tag.value = value
+}
+
+func NewByte(value int8) *ByteTag {
+	return &ByteTag{
+		value: value,
+	}
 }

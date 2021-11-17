@@ -6,10 +6,6 @@ const shortTypeId shortType = 2
 
 type shortType int8
 
-type ShortTag struct {
-	value int16
-}
-
 func (_ shortType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt16()
 
@@ -34,4 +30,12 @@ func (_ shortType) Write(writer Writer, tag Tag) error {
 
 func (_ shortType) GetId() int8 {
 	return int8(shortTypeId)
+}
+
+type ShortTag struct {
+	value int16
+}
+
+func (_ ShortTag) dataType() dataType {
+	return shortTypeId
 }

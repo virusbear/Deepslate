@@ -9,10 +9,6 @@ const longArrayTypeId longArrayType = 12
 
 type longArrayType int8
 
-type LongArrayTag struct {
-	value []int64
-}
-
 func (_ longArrayType) Read(reader Reader) (Tag, error) {
 	length, err := reader.readInt32()
 
@@ -59,4 +55,12 @@ func (_ longArrayType) Write(writer Writer, tag Tag) error {
 
 func (_ longArrayType) GetId() int8 {
 	return int8(longArrayTypeId)
+}
+
+type LongArrayTag struct {
+	value []int64
+}
+
+func (_ LongArrayTag) dataType() dataType {
+	return longArrayTypeId
 }

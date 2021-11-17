@@ -9,11 +9,6 @@ const listTypeId listType = 9
 
 type listType int8
 
-type ListTag struct {
-	dataType dataType
-	value    []Tag
-}
-
 func (_ listType) Read(reader Reader) (Tag, error) {
 	dtype, err := reader.readInt8()
 
@@ -46,7 +41,7 @@ func (_ listType) Read(reader Reader) (Tag, error) {
 	}
 
 	return ListTag{
-		dataType: dataType,
+		dType: dataType,
 		value: list,
 	}, nil
 }
@@ -58,12 +53,12 @@ func (_ listType) Write(writer Writer, tag Tag) error {
 		return errors.New("incompatible tag. Expected LIST")
 	}
 
-	if err := writer.writeInt8(data.dataType.GetId()); err != nil {
+	if err := writer.writeInt8(data.dType.GetId()); err != nil {
 		return fmt.Errorf("unable to write list datatype. Reason: %w", err)
 	}
 
 	for i, value := range data.value {
-		if err := data.dataType.Write(writer, value); err != nil {
+		if err := data.dType.Write(writer, value); err != nil {
 			return fmt.Errorf("unable to write list at index %d. Reason: %w", i, err)
 		}
 	}
@@ -73,4 +68,13 @@ func (_ listType) Write(writer Writer, tag Tag) error {
 
 func (_ listType) GetId() int8 {
 	return int8(listTypeId)
+}
+
+type ListTag struct {
+	dType dataType
+	value    []Tag
+}
+
+func (_ ListTag) dataType() dataType {
+	return listTypeId
 }

@@ -6,10 +6,6 @@ const longTypeId longType = 4
 
 type longType int8
 
-type LongTag struct {
-	value int64
-}
-
 func (_ longType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt64()
 
@@ -34,4 +30,12 @@ func (_ longType) Write(writer Writer, tag Tag) error {
 
 func (_ longType) GetId() int8 {
 	return int8(longTypeId)
+}
+
+type LongTag struct {
+	value int64
+}
+
+func (_ LongTag) dataType() dataType {
+	return longTypeId
 }
