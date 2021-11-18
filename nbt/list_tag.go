@@ -5,9 +5,7 @@ import (
 	"fmt"
 )
 
-const listTypeId listType = 9
-
-type listType int8
+type listType struct{}
 
 func (_ listType) Read(reader Reader) (Tag, error) {
 	dtype, err := reader.readInt8()
@@ -53,7 +51,7 @@ func (_ listType) Write(writer Writer, tag Tag) error {
 		return errors.New("incompatible tag. Expected LIST")
 	}
 
-	if err := writer.writeInt8(data.dType.GetId()); err != nil {
+	if err := writer.writeInt8(data.Type()); err != nil {
 		return fmt.Errorf("unable to write list datatype. Reason: %w", err)
 	}
 

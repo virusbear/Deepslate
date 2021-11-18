@@ -2,9 +2,7 @@ package nbt
 
 import "errors"
 
-const longTypeId longType = 4
-
-type longType int8
+type longType struct{}
 
 func (_ longType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt64()

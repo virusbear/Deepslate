@@ -4,9 +4,7 @@ import (
 	"errors"
 )
 
-const intTypeId intType = 3
-
-type intType int8
+type intType struct{}
 
 func (_ intType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt32()
@@ -40,4 +38,18 @@ type IntTag struct {
 
 func (_ IntTag) dataType() dataType {
 	return intTypeId
+}
+
+func (tag IntTag) Get() int32 {
+	return tag.value
+}
+
+func (tag IntTag) Set(value int32) {
+	tag.value = value
+}
+
+func NewInt(value int32) *IntTag {
+	return &IntTag{
+		value: value,
+	}
 }

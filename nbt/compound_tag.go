@@ -4,9 +4,7 @@ import (
 	"errors"
 )
 
-const compoundTypeId compoundType = 10
-
-type compoundType int8
+type compoundType struct{}
 
 func (_ compoundType) Read(reader Reader) (Tag, error) {
 	compound := CompoundTag{
@@ -20,7 +18,7 @@ func (_ compoundType) Read(reader Reader) (Tag, error) {
 			return nil, err
 		}
 
-		if tag.dataType() == endTypeId {
+		if tag.Type() == TagEnd {
 			break
 		}
 
@@ -45,17 +43,13 @@ func (_ compoundType) Write(writer Writer, tag Tag) error {
 		}
 	}
 
-	err := writer.writeInt8(endTypeId.GetId())
+	err := writer.writeInt8(TagEnd)
 	if err != nil {
 		return err
 	}
 
-	err = endTypeId.Write(writer, endTag{})
+	err = endType.Write(writer, endTag{})
 	return err
-}
-
-func (_ compoundType) GetId() int8 {
-	return int8(compoundTypeId)
 }
 
 type CompoundTag struct {
@@ -63,7 +57,11 @@ type CompoundTag struct {
 }
 
 func (_ CompoundTag) dataType() dataType {
-	return compoundTypeId
+	return compoundType{}
+}
+
+func (_ CompoundTag) Type() int8 {
+	return TagCompound
 }
 
 func (tag CompoundTag) GetTag(name string) Tag {
@@ -86,4 +84,92 @@ func (tag CompoundTag) GetByte(name string) int8 {
 
 func (tag CompoundTag) SetByte(name string, value int8) {
 	tag.SetTag(name, NewByte(value))
+}
+
+func (tag CompoundTag) GetByteArray(name string) []int8 {
+	result, ok := tag.GetTag(name).(ByteArrayTag)
+
+	if !ok {
+		panic("unable to get bytearray")
+	}
+
+	return result.value
+}
+
+func (tag CompoundTag) SetByteArray(name string, value []int8) {
+	arr := NewByteArray(0)
+	arr.value = value
+	tag.SetTag(name, arr)
+}
+
+func (tag CompoundTag) GetCompound(name string) *CompoundTag {
+	result, ok := tag.GetTag(name).(CompoundTag)
+
+	if !ok {
+		panic("unable to get compound")
+	}
+
+	return &result
+}
+
+func (tag CompoundTag) SetCompound(name string, compound *CompoundTag) {
+	tag.SetTag(name, compound)
+}
+
+func (tag CompoundTag) GetDouble(name string) float64 {
+	result, ok := tag.GetTag(name).(DoubleTag)
+
+	if !ok {
+		panic("unable to get double")
+	}
+
+	return result.Get()
+}
+
+func (tag CompoundTag) SetDouble(name string, value float64) {
+	tag.SetTag(name, NewDouble(value))
+}
+
+func (tag CompoundTag) GetFloat(name string) float32 {
+	result, ok := tag.GetTag(name).(FloatTag)
+
+	if !ok {
+		panic("unable to get float")
+	}
+
+	return result.Get()
+}
+
+func (tag CompoundTag) SetFloat(name string, value float32) {
+	tag.SetTag(name, NewFloat(value))
+}
+
+func (tag CompoundTag) GetInt(name string) int32 {
+	result, ok := tag.GetTag(name).(IntTag)
+
+	if !ok {
+		panic("unable to get int")
+	}
+
+	return result.Get()
+}
+
+func (tag CompoundTag) SetInt(name string, value int32) {
+	tag.SetTag(name, NewInt(value))
+}
+
+func (tag CompoundTag) GetIntArray(name string) []int32 {
+	result, ok := tag.GetTag(name).(IntArrayTag)
+
+	if !ok {
+		panic("unable to get intarray")
+	}
+
+	return result.value
+}
+
+func (tag CompoundTag) SetIntArray(name string, value []int32) {
+	arr := NewIntArray(0)
+	arr.value = value
+	tag.SetTag(name, arr)
 }

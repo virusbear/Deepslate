@@ -2,9 +2,7 @@ package nbt
 
 import "errors"
 
-const byteTypeId byteType = 1
-
-type byteType int8
+type byteType struct {}
 
 func (_ byteType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt8()
@@ -25,20 +23,20 @@ func (_ byteType) Write(writer Writer, tag Tag) error {
 	return writer.writeInt8(data.value)
 }
 
-func (_ byteType) GetId() int8 {
-	return int8(byteTypeId)
-}
-
-func (tag ByteTag) Get() int8 {
-	return tag.value
-}
-
 type ByteTag struct {
 	value int8
 }
 
 func (_ ByteTag) dataType() dataType {
-	return byteTypeId
+	return byteType{}
+}
+
+func (_ ByteTag) Type() int8 {
+	return TagByte
+}
+
+func (tag ByteTag) Get() int8 {
+	return tag.value
 }
 
 func (tag ByteTag) Set(value int8) {

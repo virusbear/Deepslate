@@ -16,7 +16,7 @@ func NewWriter(writer io.Writer) Writer {
 }
 
 func (nbt Writer) Write(name string, tag Tag) error {
-	err := nbt.writeInt8(tag.dataType().GetId())
+	err := nbt.writeInt8(tag.Type())
 	if err != nil {
 		return err
 	}

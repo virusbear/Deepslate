@@ -5,9 +5,7 @@ import (
 	"fmt"
 )
 
-const intArrayTypeId intArrayType = 11
-
-type intArrayType int8
+type intArrayType struct{}
 
 func (_ intArrayType) Read(reader Reader) (Tag, error) {
 	length, err := reader.readInt32()
@@ -63,4 +61,26 @@ type IntArrayTag struct {
 
 func (_ IntArrayTag) dataType() dataType {
 	return intArrayTypeId
+}
+
+func (arr IntArrayTag) Raw() []int32 {
+	return arr.value
+}
+
+func (arr IntArrayTag) Get(index int) int32 {
+	return arr.value[index]
+}
+
+func (arr IntArrayTag) Set(index int, value int32) {
+	arr.value[index] = value
+}
+
+func (arr IntArrayTag) Length() int {
+	return len(arr.value)
+}
+
+func NewIntArray(size int) *IntArrayTag {
+	return &IntArrayTag{
+		value: make([]int32, size),
+	}
 }

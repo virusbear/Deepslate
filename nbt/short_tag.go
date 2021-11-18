@@ -2,9 +2,7 @@ package nbt
 
 import "errors"
 
-const shortTypeId shortType = 2
-
-type shortType int8
+type shortType struct{}
 
 func (_ shortType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt16()

@@ -2,9 +2,7 @@ package nbt
 
 import "errors"
 
-const endTypeId endType = 0
-
-type endType int8
+type endType struct{}
 
 func (end endType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readInt8()

@@ -5,9 +5,7 @@ import (
 	"fmt"
 )
 
-const longArrayTypeId longArrayType = 12
-
-type longArrayType int8
+type longArrayType struct{}
 
 func (_ longArrayType) Read(reader Reader) (Tag, error) {
 	length, err := reader.readInt32()

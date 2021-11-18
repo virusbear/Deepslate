@@ -2,9 +2,7 @@ package nbt
 
 import "errors"
 
-const doubleTypeId doubleType = 6
-
-type doubleType int8
+type doubleType struct{}
 
 func (_ doubleType) Read(reader Reader) (Tag, error) {
 	data, err := reader.readFloat64()
@@ -38,4 +36,18 @@ type DoubleTag struct {
 
 func (_ DoubleTag) dataType() dataType {
 	return doubleTypeId
+}
+
+func (tag DoubleTag) Get() float64 {
+	return tag.value
+}
+
+func (tag DoubleTag) Set(value float64) {
+	tag.value = value
+}
+
+func NewDouble(value float64) *DoubleTag {
+	return &DoubleTag{
+		value: value,
+	}
 }
