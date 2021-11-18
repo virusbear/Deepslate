@@ -51,16 +51,16 @@ func (_ intArrayType) Write(writer Writer, tag Tag) error {
 	return nil
 }
 
-func (_ intArrayType) GetId() int8 {
-	return int8(intArrayTypeId)
-}
-
 type IntArrayTag struct {
 	value []int32
 }
 
 func (_ IntArrayTag) dataType() dataType {
-	return intArrayTypeId
+	return intArrayType{}
+}
+
+func (_ IntArrayTag) Type() int8 {
+	return TagIntArray
 }
 
 func (arr IntArrayTag) Raw() []int32 {

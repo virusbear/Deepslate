@@ -48,7 +48,8 @@ func (_ compoundType) Write(writer Writer, tag Tag) error {
 		return err
 	}
 
-	err = endType.Write(writer, endTag{})
+	end := endTag{}
+	err = end.dataType().Write(writer, end)
 	return err
 }
 
@@ -172,4 +173,76 @@ func (tag CompoundTag) SetIntArray(name string, value []int32) {
 	arr := NewIntArray(0)
 	arr.value = value
 	tag.SetTag(name, arr)
+}
+
+func (tag CompoundTag) GetLong(name string) int64 {
+	result, ok := tag.GetTag(name).(LongTag)
+
+	if !ok {
+		panic("unable to get long")
+	}
+
+	return result.Get()
+}
+
+func (tag CompoundTag) SetLong(name string, value int64) {
+	tag.SetTag(name, NewLong(value))
+}
+
+func (tag CompoundTag) GetLongArray(name string) []int64 {
+	result, ok := tag.GetTag(name).(LongArrayTag)
+
+	if !ok {
+		panic("unable to get longarray")
+	}
+
+	return result.value
+}
+
+func (tag CompoundTag) SetLongArray(name string, value []int64) {
+	arr := NewLongArray(0)
+	arr.value = value
+	tag.SetTag(name, arr)
+}
+
+func (tag CompoundTag) GetShort(name string) int16 {
+	result, ok := tag.GetTag(name).(ShortTag)
+
+	if !ok {
+		panic("unable to get short")
+	}
+
+	return result.Get()
+}
+
+func (tag CompoundTag) SetShort(name string, value int16) {
+	tag.SetTag(name, NewShort(value))
+}
+
+func (tag CompoundTag) GetString(name string) string {
+	result, ok := tag.GetTag(name).(StringTag)
+
+	if !ok {
+		panic("unable to get string")
+	}
+
+	return result.Get()
+}
+
+func (tag CompoundTag) SetString(name string, value string) {
+	tag.SetTag(name, NewString(value))
+}
+
+func (tag CompoundTag) SetList(name string, value *ListTag) {
+	tag.SetTag(name, value)
+}
+
+func (tag CompoundTag) GetList(name string) *ListTag {
+	result, ok := tag.GetTag(name).(ListTag)
+
+	if !ok {
+		panic("unable to get short")
+	}
+
+	return &result
 }

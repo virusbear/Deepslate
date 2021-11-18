@@ -26,14 +26,28 @@ func (_ longType) Write(writer Writer, tag Tag) error {
 	return writer.writeInt64(data.value)
 }
 
-func (_ longType) GetId() int8 {
-	return int8(longTypeId)
-}
-
 type LongTag struct {
 	value int64
 }
 
 func (_ LongTag) dataType() dataType {
-	return longTypeId
+	return longType{}
+}
+
+func (_ LongTag) Type() int8 {
+	return TagLong
+}
+
+func (tag LongTag) Get() int64 {
+	return tag.value
+}
+
+func (tag LongTag) Set(value int64) {
+	tag.value = value
+}
+
+func NewLong(value int64) *LongTag {
+	return &LongTag{
+		value: value,
+	}
 }

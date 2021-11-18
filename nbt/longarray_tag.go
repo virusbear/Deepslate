@@ -51,14 +51,36 @@ func (_ longArrayType) Write(writer Writer, tag Tag) error {
 	return nil
 }
 
-func (_ longArrayType) GetId() int8 {
-	return int8(longArrayTypeId)
-}
-
 type LongArrayTag struct {
 	value []int64
 }
 
 func (_ LongArrayTag) dataType() dataType {
-	return longArrayTypeId
+	return longArrayType{}
+}
+
+func (_ LongArrayTag) Type() int8 {
+	return TagLongArray
+}
+
+func (arr LongArrayTag) Raw() []int64 {
+	return arr.value
+}
+
+func (arr LongArrayTag) Get(index int) int64 {
+	return arr.value[index]
+}
+
+func (arr LongArrayTag) Set(index int, value int64) {
+	arr.value[index] = value
+}
+
+func (arr LongArrayTag) Length() int {
+	return len(arr.value)
+}
+
+func NewLongArray(size int) *LongArrayTag {
+	return &LongArrayTag{
+		value: make([]int64, size),
+	}
 }

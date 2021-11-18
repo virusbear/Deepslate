@@ -28,16 +28,16 @@ func (_ intType) Write(writer Writer, tag Tag) error {
 	return writer.writeInt32(data.value)
 }
 
-func (_ intType) GetId() int8 {
-	return int8(intTypeId)
-}
-
 type IntTag struct {
 	value int32
 }
 
 func (_ IntTag) dataType() dataType {
-	return intTypeId
+	return intType{}
+}
+
+func (_ IntTag) Type() int8 {
+	return TagInt
 }
 
 func (tag IntTag) Get() int32 {

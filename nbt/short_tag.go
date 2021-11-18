@@ -26,14 +26,28 @@ func (_ shortType) Write(writer Writer, tag Tag) error {
 	return writer.writeInt16(data.value)
 }
 
-func (_ shortType) GetId() int8 {
-	return int8(shortTypeId)
-}
-
 type ShortTag struct {
 	value int16
 }
 
 func (_ ShortTag) dataType() dataType {
-	return shortTypeId
+	return shortType{}
+}
+
+func (_ ShortTag) Type() int8 {
+	return TagShort
+}
+
+func (tag ShortTag) Get() int16 {
+	return tag.value
+}
+
+func (tag ShortTag) Set(value int16) {
+	tag.value = value
+}
+
+func NewShort(value int16) *ShortTag {
+	return &ShortTag{
+		value: value,
+	}
 }

@@ -39,7 +39,7 @@ func (_ listType) Read(reader Reader) (Tag, error) {
 	}
 
 	return ListTag{
-		dType: dataType,
+		dType: dtype,
 		value: list,
 	}, nil
 }
@@ -56,7 +56,12 @@ func (_ listType) Write(writer Writer, tag Tag) error {
 	}
 
 	for i, value := range data.value {
-		if err := data.dType.Write(writer, value); err != nil {
+		dataType, err := getDataType(data.dType)
+		if err != nil {
+			return fmt.Errorf("unable to get datatype for id %d. Reason: %w", data.dType, err)
+		}
+
+		if err := dataType.Write(writer, value); err != nil {
 			return fmt.Errorf("unable to write list at index %d. Reason: %w", i, err)
 		}
 	}
@@ -64,15 +69,42 @@ func (_ listType) Write(writer Writer, tag Tag) error {
 	return nil
 }
 
-func (_ listType) GetId() int8 {
-	return int8(listTypeId)
-}
-
 type ListTag struct {
-	dType dataType
-	value    []Tag
+	dType int8
+	value []Tag
 }
 
 func (_ ListTag) dataType() dataType {
-	return listTypeId
+	return listType{}
+}
+
+func (_ ListTag) Type() int8 {
+	return TagList
+}
+
+func (tag ListTag) Raw() []Tag {
+	return tag.value
+}
+
+func (tag ListTag) ContentType() int8 {
+	return tag.dType
+}
+
+func (tag ListTag) Get(index int) *Tag {
+	return &tag.value[index]
+}
+
+func (tag ListTag) Set(index int, value Tag) {
+	tag.value[index] = value
+}
+
+func (tag ListTag) Length() int {
+	return len(tag.value)
+}
+
+func NewList(size int, dtype int8) *ListTag {
+	return &ListTag{
+		dType: dtype,
+		value: make([]Tag, size),
+	}
 }

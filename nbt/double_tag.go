@@ -26,16 +26,16 @@ func (_ doubleType) Write(writer Writer, tag Tag) error {
 	return writer.writeFloat64(data.value)
 }
 
-func (_ doubleType) GetId() int8 {
-	return int8(doubleTypeId)
-}
-
 type DoubleTag struct {
 	value float64
 }
 
 func (_ DoubleTag) dataType() dataType {
-	return doubleTypeId
+	return doubleType{}
+}
+
+func (_ DoubleTag) Type() int8 {
+	return TagDouble
 }
 
 func (tag DoubleTag) Get() float64 {

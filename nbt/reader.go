@@ -27,8 +27,8 @@ func (nbt Reader) Read() (string, Tag, error) {
 		return "", nil, err
 	}
 
-	if dataType == endTypeId {
-		tag, err := endTypeId.Read(nbt)
+	if dtype == TagEnd {
+		tag, err := dataType.Read(nbt)
 		return "", tag, err
 	}
 
@@ -41,30 +41,34 @@ func (nbt Reader) Read() (string, Tag, error) {
 	return name, tag, err
 }
 
+func (nbt Reader) read(data interface{}) error {
+	return binary.Read(nbt.reader, binary.BigEndian, data)
+}
+
 func (nbt Reader) readInt8() (int8, error) {
 	var data int8
-	err := binary.Read(nbt.reader, binary.BigEndian, &data)
+	err := nbt.read(&data)
 
 	return data, err
 }
 
 func (nbt Reader) readInt16() (int16, error) {
 	var data int16
-	err := binary.Read(nbt.reader, binary.BigEndian, &data)
+	err := nbt.read(&data)
 
 	return data, err
 }
 
 func (nbt Reader) readInt32() (int32, error) {
 	var data int32
-	err := binary.Read(nbt.reader, binary.BigEndian, &data)
+	err := nbt.read(&data)
 
 	return data, err
 }
 
 func (nbt Reader) readInt64() (int64, error) {
 	var data int64
-	err := binary.Read(nbt.reader, binary.BigEndian, &data)
+	err := nbt.read(&data)
 
 	return data, err
 }
@@ -80,21 +84,21 @@ func (nbt Reader) readString() (string, error) {
 	}
 
 	buf := make([]byte, length)
-	err = binary.Read(nbt.reader, binary.BigEndian, buf)
+	err = nbt.read(&buf)
 
 	return string(buf), err
 }
 
 func (nbt Reader) readFloat32() (float32, error) {
 	var data float32
-	err := binary.Read(nbt.reader, binary.BigEndian, &data)
+	err := nbt.read(&data)
 
 	return data, err
 }
 
 func (nbt Reader) readFloat64() (float64, error) {
 	var data float64
-	err := binary.Read(nbt.reader, binary.BigEndian, &data)
+	err := nbt.read(&data)
 
 	return data, err
 }
@@ -110,7 +114,7 @@ func (nbt Reader) readByteArray() ([]int8, error) {
 	}
 
 	buf := make([]int8, length)
-	err = binary.Read(nbt.reader, binary.BigEndian, buf)
+	err = nbt.read(&buf)
 
 	return buf, err
 }
@@ -126,7 +130,7 @@ func (nbt Reader) readInt32Array() ([]int32, error) {
 	}
 
 	buf := make([]int32, length)
-	err = binary.Read(nbt.reader, binary.BigEndian, buf)
+	err = nbt.read(&buf)
 
 	return buf, err
 }
@@ -142,7 +146,7 @@ func (nbt Reader) readInt64Array() ([]int64, error) {
 	}
 
 	buf := make([]int64, length)
-	err = binary.Read(nbt.reader, binary.BigEndian, buf)
+	err = nbt.read(&buf)
 
 	return buf, err
 }

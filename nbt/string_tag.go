@@ -26,14 +26,28 @@ func (_ stringType) Write(writer Writer, tag Tag) error {
 	return writer.writeString(data.value)
 }
 
-func (_ stringType) GetId() int8 {
-	return int8(stringTypeId)
-}
-
 type StringTag struct {
 	value string
 }
 
 func (_ StringTag) dataType() dataType {
-	return stringTypeId
+	return stringType{}
+}
+
+func (_ StringTag) Type() int8 {
+	return TagString
+}
+
+func (tag StringTag) Get() string {
+	return tag.value
+}
+
+func (tag StringTag) Set(value string) {
+	tag.value = value
+}
+
+func NewString(value string) *StringTag {
+	return &StringTag{
+		value: value,
+	}
 }
