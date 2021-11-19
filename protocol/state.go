@@ -5,9 +5,7 @@ type State interface {
 	Handle(packet *Packet)
 }
 
-type Handshaking struct {
-
-}
+type Handshaking struct {}
 
 func (_ Handshaking) GetId() int {
 	return -1
