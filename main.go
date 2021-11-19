@@ -11,5 +11,5 @@ func main() {
 		panic(err)
 	}
 
-	server.Run()
+	server.Start()
 }

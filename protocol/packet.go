@@ -28,6 +28,10 @@ type PacketReader interface {
 	ReadPacket(reader io.Reader) (*Packet, error)
 }
 
+type PacketWriter interface {
+	WritePacket(writer io.Writer, packet *Packet) error
+}
+
 type DefaultPacketReader struct {}
 type CompressedPacketReader struct {
 	Threshold int
@@ -35,6 +39,10 @@ type CompressedPacketReader struct {
 
 func NewPacketReader() PacketReader {
 	return &DefaultPacketReader{}
+}
+
+func NewPacketWriter() PacketWriter {
+	//TODO
 }
 
 func NewCompressedPacketReader(threshold int) PacketReader {
@@ -118,7 +126,7 @@ func (p Packet) read(v interface{}) error {
 
 func (p Packet) ReadBool() (bool, error) {
 	var value byte
-	if err := p.read(value); err != nil {
+	if err := p.read(&value); err != nil {
 		return false, err
 	}
 
@@ -127,7 +135,7 @@ func (p Packet) ReadBool() (bool, error) {
 
 func (p Packet) ReadByte() (int8, error) {
 	var value int8
-	if err := p.read(value); err != nil {
+	if err := p.read(&value); err != nil {
 		return 0, err
 	}
 
@@ -136,7 +144,7 @@ func (p Packet) ReadByte() (int8, error) {
 
 func (p Packet) ReadUByte() (uint8, error) {
 	var value uint8
-	if err := p.read(value); err != nil {
+	if err := p.read(&value); err != nil {
 		return 0, err
 	}
 
@@ -145,7 +153,7 @@ func (p Packet) ReadUByte() (uint8, error) {
 
 func (p Packet) ReadShort() (int16, error) {
 	var value int16
-	if err := p.read(value); err != nil {
+	if err := p.read(&value); err != nil {
 		return 0, err
 	}
 
@@ -154,7 +162,7 @@ func (p Packet) ReadShort() (int16, error) {
 
 func (p Packet) ReadUShort() (uint16, error) {
 	var value uint16
-	if err := p.read(value); err != nil {
+	if err := p.read(&value); err != nil {
 		return 0, err
 	}
 
@@ -163,7 +171,7 @@ func (p Packet) ReadUShort() (uint16, error) {
 
 func (p Packet) ReadInt() (int32, error) {
 	var value int32
-	if err := p.read(value); err != nil {
+	if err := p.read(&value); err != nil {
 		return 0, err
 	}
 
@@ -172,7 +180,7 @@ func (p Packet) ReadInt() (int32, error) {
 
 func (p Packet) ReadLong() (int64, error) {
 	var value int64
-	if err := p.read(value); err != nil {
+	if err := p.read(&value); err != nil {
 		return 0, err
 	}
 
@@ -181,7 +189,7 @@ func (p Packet) ReadLong() (int64, error) {
 
 func (p Packet) ReadFloat() (float32, error) {
 	var value float32
-	if err := p.read(value); err != nil {
+	if err := p.read(&value); err != nil {
 		return 0, err
 	}
 
@@ -190,7 +198,7 @@ func (p Packet) ReadFloat() (float32, error) {
 
 func (p Packet) ReadDouble() (float64, error) {
 	var value float64
-	if err := p.read(value); err != nil {
+	if err := p.read(&value); err != nil {
 		return 0, err
 	}
 
@@ -338,7 +346,6 @@ func (p Packet) ReadByteArray() ([]int8, error) {
 func readVarInt(reader io.Reader) (int32, error) {
 	var value int32
 	var offset int
-	var current byte
 	buf := make([]byte, 1)
 
 	for {
@@ -354,7 +361,7 @@ func readVarInt(reader io.Reader) (int32, error) {
 			return 0, errors.New("VarInt too big")
 		}
 
-		if (current & 0x80) != 0x80 {
+		if (buf[0] & 128) != 128 {
 			break
 		}
 	}
